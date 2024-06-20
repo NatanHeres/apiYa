@@ -14,7 +14,7 @@
   "author": "y",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
-    "path": "^0.12.7",
+    "express": "^4.19.2",
+    "path": "^0.12.7"
   }
 }
