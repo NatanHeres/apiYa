@@ -1,0 +1,1 @@
+exports.danbooru = require('./image/danbooru')

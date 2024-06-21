@@ -24,24 +24,6 @@ app.get("/", (req, res) => {
    res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get('/api/danbooru', async (req, res) => {
-  try {
-    const query = req.query.query;
-    if (!query) {
-      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
-    }
-    const response = await scrape.image.danbooru(query);
-    res.status(200).json({
-      status: 200,
-      creator: creator,
-      data: { response }
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });

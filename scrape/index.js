@@ -1,0 +1,1 @@
+exports.image = require('./src/image')
