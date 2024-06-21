@@ -1,7 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const qs = require("qs");
-const fetch = require("node-fetch");
+
 
 async function rule34(query) {
   try {
@@ -25,7 +24,7 @@ async function rule34(query) {
       });
     });
 
-    await conn.sendFile(m.chat, images.imageUrls.image, '', '', m)
+    return images
   } catch (error) {
     m.reply(error);
     return {
