@@ -11,6 +11,7 @@ const limiter = rateLimit({
   message: "To Many Request From This Ip, What Are You Doing?",
 });
 
+const creator = "Fumi";
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
