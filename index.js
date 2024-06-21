@@ -25,6 +25,10 @@ app.get("/", (req, res) => {
    res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get("/image", (req, res) => {
+   res.sendFile(path.join(__dirname, "tables.html"));
+});
+
 app.get('/api/danbooru', async (req, res) => {
   try {
     const query = req.query.query;
