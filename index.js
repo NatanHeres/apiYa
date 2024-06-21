@@ -29,6 +29,7 @@ app.get("/image", (req, res) => {
    res.sendFile(path.join(__dirname, "tables.html"));
 });
 
+
 app.get('/api/danbooru', async (req, res) => {
   try {
     const query = req.query.query;
@@ -36,6 +37,42 @@ app.get('/api/danbooru', async (req, res) => {
       return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
     }
     const response = await scrape.image.danbooru(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/gelbooru', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.image.gelbooru(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/rule34', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.image.rule34(query);
     res.status(200).json({
       status: 200,
       creator: creator,
