@@ -1,7 +1,7 @@
  const axios = require('axios');
 const cheerio = require('cheerio');
 
-async function danbooru(q) {
+async function danboorur(q) {
     const url = `https://danbooru.donmai.us/posts?tags=${encodeURIComponent(q)}`;
     const response = await axios.get(url);
     const html = response.data;
