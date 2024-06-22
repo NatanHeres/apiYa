@@ -19,7 +19,7 @@ async function zuzunimedetail(query) {
 
     const animeData = {
       title: title,
-      imageSrc: imageSrc,
+      thumbnail: imageSrc,
       episodeListr: episodeAnchor,
       episodeDate: episodeDate
     };

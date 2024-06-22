@@ -21,7 +21,7 @@ async function zuzunimemp4(url) {
         dataLitespeedSrc = dataLitespeedSrc.replace(/ /g, '%20');
 
         results.push({
-          dataLitespeedSrc: dataLitespeedSrc
+          streamMp4: dataLitespeedSrc
         });
       }
     });
