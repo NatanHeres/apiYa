@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-async function zuzuVideo(url) {
+async function zuzunimemp4(url) {
   try {
     const response = await axios.get(`https://zuzunime.com/${url}`);
     const html = response.data;
