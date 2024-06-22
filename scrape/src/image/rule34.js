@@ -26,7 +26,7 @@ async function rule34(query) {
 
     return images
   } catch (error) {
-    m.reply(error);
+    console.error(error);
     return {
       status: '500',
       message: 'An error occurred while retrieving the images.'
