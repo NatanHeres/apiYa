@@ -8,7 +8,7 @@ const scrape = require("./scrape/index.js");
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 menit
-  max: 5, // maksimal 5 request per windowMs
+  max: 20, // maksimal 5 request per windowMs
   message: 'Opps! Too Many Request, What Re You Doing? Baka!'
 });
 
