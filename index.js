@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const rateLimit = require("express-rate-limit");
 const cors = require('cors');
+const FormData = require('form-data');
 const scrape = require("./scrape/index.js");
 
 
@@ -32,6 +33,11 @@ app.get("/image", (req, res) => {
 app.get("/stream", (req, res) => {
    res.sendFile(path.join(__dirname, "stream.html"));
 })
+
+app.get("/ai", (req, res) => {
+   res.sendFile(path.join(__dirname, "artificial.html"));
+})
+
 
 // ------------------------------- Image ----------------------------- -//
 // ------------------------------- Image ----------------------------- -//
