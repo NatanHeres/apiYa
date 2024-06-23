@@ -251,7 +251,7 @@ app.get('/api/text2img', async (req, res) => {
       if (!query) {
         return res.status(400).json({ error: 'Parameter "query" not found' });
       }
-      text2img(query).then(async image => {
+      scrape.ai.text2img(query).then(async image => {
         res.set({ 'Content-Type': 'image/png' })
         res.send(image)
     })
