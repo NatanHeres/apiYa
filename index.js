@@ -176,6 +176,41 @@ app.get('/api/yandere', async (req, res) => {
   }
 });
 
+
+app.get('/api/pinterest', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.image.pinterest(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/pinterestdown', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.image.pinterestdown(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 // ------------------------------- manga & stream ----------------------------- -//
 // ------------------------------- manga & stream ----------------------------- -//
 
