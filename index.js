@@ -247,7 +247,7 @@ app.get('/api/blackbox', async (req, res) => {
 
 
 app.get('/api/text2img', async (req, res) => {
-      const url = req.query.query;
+      const query = req.query.query;
       if (!query) {
         return res.status(400).json({ error: 'Parameter "query" not found' });
       }
