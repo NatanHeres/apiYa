@@ -7,9 +7,9 @@ const scrape = require("./scrape/index.js");
 
 
 const limiter = rateLimit({
-  windows: 1 * 60 * 1000, // 15 menit
-  max: 25, // 5 req max
-  message: "To Many Request From This Ip, What Are You Doing?",
+  windowMs: 1 * 60 * 1000, // 1 menit
+  max: 5, // maksimal 5 request per windowMs
+  message: 'Opps! Too Many Request, What Re You Doing? Baka!'
 });
 
 const creator = "Fumi";
