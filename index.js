@@ -33,6 +33,8 @@ app.get("/stream", (req, res) => {
    res.sendFile(path.join(__dirname, "stream.html"));
 })
 
+// ------------------------------- Image ----------------------------- -//
+// ------------------------------- Image ----------------------------- -//
 
 app.get('/api/danbooru', async (req, res) => {
   try {
@@ -123,6 +125,9 @@ app.get('/api/yandere', async (req, res) => {
   }
 });
 
+// ------------------------------- manga & stream ----------------------------- -//
+// ------------------------------- manga & stream ----------------------------- -//
+
 
 app.get('/api/zuzunimesearch', async (req, res) => {
   try {
@@ -194,6 +199,57 @@ app.get('/api/myanimelist', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// ------------------------------- AI ----------------------------- -//
+// ------------------------------- AI ----------------------------- -//
+
+
+app.get('/api/gemini', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.gemini(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/blackbox', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.blackbox(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/text2img', async (req, res) => {
+      const url = req.query.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Parameter "query" not found' });
+      }
+      text2img(query).then(async image => {
+        res.set({ 'Content-Type': 'image/png' })
+        res.send(image)
+    })
+    });
 
 app.listen(3000, () => {
   console.log('Server started on port 3000');
