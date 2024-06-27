@@ -38,50 +38,7 @@ app.get("/ai", (req, res) => {
    res.sendFile(path.join(__dirname, "artificial.html"));
 })
 
-app.get('/endpoints', (req, res) => {
-  const apiFilePath = path.join(__dirname, './index.js');
 
-  // Membaca file index.js yang berisi definisi endpoint-endpoint
-  fs.readFile(apiFilePath, 'utf8', (err, apiCode) => {
-      if (err) {
-          console.error('Gagal membaca file index.js:', err);
-          return res.status(500).json({ error: 'Gagal Mengambil Data Endpoints' });
-      }
-
-      try {
-          const endpoints = [];
-          const routerRegex = /app\.get\(['"]\/api\/(\w+)['"],\s*async\s*\(req,\s*res\)\s*=>\s*{([\s\S]*?)\s*}/g;
-
-          let match;
-          while ((match = routerRegex.exec(apiCode)) !== null) {
-              const endpoint = match[1];
-              const endpointCode = match[2];
-
-              const paramRegex = /req\.query\.(\w+)/g;
-              const parameters = [];
-              let paramMatch;
-
-              while ((paramMatch = paramRegex.exec(endpointCode)) !== null) {
-                  const paramName = paramMatch[1];
-                  parameters.push(paramName);
-              }
-
-              parameters.push("apikey");
-              const link = `http://localhost:3000/api/${endpoint}?${parameters.map(param => `${param}=`).join('&')}`;
-
-              endpoints.push({
-                  name_endpoint: endpoint,
-                  link: link
-              });
-          }
-
-          res.json({ endpoints });
-      } catch (error) {
-          console.error('Gagal mengekstrak endpoint:', error);
-          res.status(500).json({ error: 'Gagal mengekstrak endpoint' });
-      }
-  });
-});
 
 
 // ------------------------------- Image ----------------------------- -//
@@ -286,6 +243,42 @@ app.get('/api/myanimelist', async (req, res) => {
   }
 });
 
+
+app.get('/api/charasearch', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.stream.charaSearch(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/charadetail', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.stream.charaId(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ------------------------------- AI ----------------------------- -//
 // ------------------------------- AI ----------------------------- -//
 
@@ -340,5 +333,105 @@ app.get('/api/text2img', async (req, res) => {
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });
+
+
+app.get('/api/gpt4', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.gpt4(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get("/ai", (req, res) => {
+   res.sendFile(path.join(__dirname, "maintenance.html"));
+})
+
+
+// -------------------------------- TOOLS ------------------------------------ //
+// -------------------------------- TOOLS ------------------------------------ //
+
+app.get('/api/facebook', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.facebook(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/instagram', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.instagram(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/tiktok', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.tiktok(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/x', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.x(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 
 module.exports = app;
