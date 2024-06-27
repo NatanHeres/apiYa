@@ -38,6 +38,10 @@ app.get("/ai", (req, res) => {
    res.sendFile(path.join(__dirname, "artificial.html"));
 })
 
+app.get("/tools", (req, res) => {
+   res.sendFile(path.join(__dirname, "tools.html"));
+})
+
 
 
 
