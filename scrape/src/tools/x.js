@@ -18,7 +18,7 @@ async function getInfo() {
     throw new Error(`Error fetching info: ${error.message}`);
   }
 }
-async function twitter(url) {
+async function x(url) {
   const headers = await getRandomUserAgent();
   try {
     const response = await fetch("https://snaptwitter.com/action.php", {
