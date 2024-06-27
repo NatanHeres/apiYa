@@ -28,7 +28,5 @@ const response = await axios.get(`https://www.animecharactersdatabase.com/search
 
     return results
   }
-  .catch(error => {
-    console.error('Error fetching the page: ', error);
-  });
+ 
 module.exports = charaSearch
