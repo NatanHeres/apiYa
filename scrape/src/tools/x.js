@@ -1,6 +1,6 @@
 const { fetch } = require("undici");
 const cheerio = require("cheerio");
-const FakeUserAgent = require("fake-useragent);
+const FakeUserAgent = require("fake-useragent");
 async function getRandomUserAgent() {
   return {
     "User-Agent": FakeUserAgent()
