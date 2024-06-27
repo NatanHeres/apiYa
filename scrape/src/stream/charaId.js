@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-async function charId(id) {
+async function charaId(id) {
   try {
     const response = await axios.get(`https://www.animecharactersdatabase.com/characters.php?id=${id}`);
     const html = response.data;
