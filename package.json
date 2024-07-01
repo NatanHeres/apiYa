@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "postinstall": "playwright install && playwright install-dep",
+    "postinstall": "playwright install && playwright install-deps",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
