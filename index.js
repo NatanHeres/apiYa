@@ -172,7 +172,7 @@ app.get('/api/pinterestdown', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+/*
 
 app.get('/api/doujindesulastest', (req, res) => {
   try {
@@ -222,6 +222,8 @@ app.get('/api/doujindesudetail', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+*/
 // ------------------------------- manga & stream ----------------------------- -//
 // ------------------------------- manga & stream ----------------------------- -//
 
@@ -485,7 +487,7 @@ app.get('/api/x', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+/*
 
 app.get('/api/9xbuddy', async (req, res) => {
   try {
@@ -504,7 +506,7 @@ app.get('/api/9xbuddy', async (req, res) => {
   }
 });
 
-
+*/
 
 // ------------------------------------- CAI --------------------------------- //
 // ------------------------------------- CAI --------------------------------- //
