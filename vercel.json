@@ -6,6 +6,9 @@
       "use": "@vercel/node"
     }
   ],
+  "hooks": {
+    "build": "npx playwright install-deps && npm run vercel-build"
+  },
   "routes": [
     {
       "src": "/(.*)",
@@ -13,3 +16,4 @@
     }
   ]
 }
+
