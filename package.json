@@ -7,7 +7,7 @@
     "node": "20.x"
   },
   "scripts": {
-    "postinstall": "playwright install && playwright install-deps",
+    "vercel-build": "bash install-deps.sh && next build",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
