@@ -7,18 +7,11 @@
     "node": "20.x"
   },
   "scripts": {
-    "build": "npm build && npx playwright install",
+    "build": "npm run build && npx playwright install",
+    "vercel-build": "bash install-deps.sh && npm run build",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  
-  /*
-  scripts": {
-    // ...
-    "build": "npm build && npx playwright install",
-  },
-}
-*/
   "keywords": [],
   "author": "y",
   "license": "ISC",
@@ -29,7 +22,6 @@
     "axios": "^0.21.1",
     "express-rate-limit": "^5.3.0",
     "cors": "^2.8.5",
-    "path": "^0.12.7",
     "node-fetch": "^2.6.7",
     "form-data": "^4.0.0",
     "fake-useragent": "^1.0.1",
@@ -38,7 +30,7 @@
     "chrome-aws-lambda": "^6",
     "playwright-core": "^1.27.1"
   },
-   "devDepencies": {
-   "playwright": "^1.37.0"
-   }
+  "devDependencies": {
+    "playwright": "^1.37.0"
+  }
 }
