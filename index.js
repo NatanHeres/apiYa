@@ -176,7 +176,7 @@ app.get('/api/pinterestdown', async (req, res) => {
 
 app.get('/api/doujindesulastest', (req, res) => {
   try {
-    const response = scrape.image.doujindesulastest(url);
+    const response = scrape.image.doujindesulastest
     res.status(200).json({
       status: 200,
       creator: creator,
