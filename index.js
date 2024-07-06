@@ -4,6 +4,7 @@ const rateLimit = require("express-rate-limit");
 const cors = require('cors');
 const axios = require('axios');
 const scrape = require("./scrape/index.js");
+const { format } = require('date-fns');
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 menit
@@ -36,9 +37,16 @@ const notifyTelegram = async (message) => {
   }
 };
 
-app.use((req, res, next) => {
-  const message = `Request received at ${req.url} with query: ${JSON.stringify(req.query)}`;
-  notifyTelegram(message);
+app.use('/api', (req, res, next) => {
+  const endpoint = decodeURIComponent(req.url);
+  const timeReceived = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+  
+  res.on('finish', () => {
+    const status = res.statusCode;
+    const message = `New Request!\n\nEndpoint: ${endpoint}\nTime: ${timeReceived}\nStatus: ${status}`;
+    notifyTelegram(message);
+  });
+  
   next();
 });
 
@@ -61,7 +69,6 @@ app.get("/ai", (req, res) => {
 app.get("/tools", (req, res) => {
   res.sendFile(path.join(__dirname, "tools.html"));
 });
-
 
 
 
