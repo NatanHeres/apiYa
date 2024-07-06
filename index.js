@@ -61,16 +61,21 @@ const notifyTelegram = async (message) => {
 };
 
 app.use('/api', async (req, res, next) => {
-  const endpoint = decodeURIComponent(req.url);
+  const fullUrl = decodeURIComponent(req.url);
+  const endpointWithQuery = fullUrl; // Termasuk query string untuk notifikasi
+  const endpoint = fullUrl.split('?')[0];  // Mengabaikan query string untuk hit count
   const timeReceived = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
+  // Menyimpan request ke MongoDB
   const newRequest = new Request({
-    endpoint,
+    endpoint: endpointWithQuery,
     time: new Date(),
     ip
   });
   await newRequest.save();
+
+  // Update hit count
   await HitCount.findOneAndUpdate(
     { endpoint },
     { $inc: { count: 1 } },
@@ -79,12 +84,13 @@ app.use('/api', async (req, res, next) => {
 
   res.on('finish', () => {
     const status = res.statusCode;
-    const message = `New Request!\n\nEndpoint: ${endpoint}\nTime: ${timeReceived}\nStatus: ${status}\nIP: ${ip}`;
+    const message = `New Request!\n\nEndpoint: ${endpointWithQuery}\nTime: ${timeReceived}\nStatus: ${status}\nIP: ${ip}`;
     notifyTelegram(message);
   });
 
   next();
 });
+
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
@@ -661,7 +667,7 @@ cron.schedule('0 0 * * *', async () => {
 // Endpoint untuk menampilkan top global hits
 app.get('/api/stats', async (req, res) => {
   try {
-    const hits = await HitCount.find().sort({ count: -1 }).limit(10); // Mendapatkan top 10 endpoint berdasarkan hit count
+    const hits = await HitCount.find().sort({ count: -1 }); // Mendapatkan top 10 endpoint berdasarkan hit count tanpa query string
     res.status(200).json({
       status: 200,
       creator: creator,
@@ -671,5 +677,45 @@ app.get('/api/stats', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+const notifyGlobalHits = async () => {
+  try {
+    // Dapatkan data global hits dari endpoint /api/globalhits
+    const response = await axios.get(`http://localhost:${PORT}/api/globalhits`);
+    
+    if (response.data && response.data.data) {
+      const hits = response.data.data;
+
+      // Buat pesan untuk Telegram
+      let message = "Top Global Hits:\n\n";
+      hits.forEach((hit, index) => {
+        message += `${index + 1}. Endpoint: ${hit.endpoint} (Global Hits: ${hit.count})\n`;
+      });
+
+      // Kirim pesan ke Telegram
+      await axios.get(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+        params: {
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message
+        }
+      });
+
+      console.log('Top global hits sent to Telegram');
+    } else {
+      console.error('No data received from global hits endpoint');
+    }
+  } catch (error) {
+    console.error('Error fetching or sending global hits:', error.message);
+  }
+};
+
+// Contoh panggilan fungsi (dapat dijalankan dalam interval waktu atau cron job)
+notifyGlobalHits();
+
+// Mengirim laporan global hits harian
+cron.schedule('5 0 * * *', () => {
+  notifyGlobalHits();
+});
+
 
 module.exports = app;
