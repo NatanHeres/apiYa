@@ -5,6 +5,8 @@ const cors = require('cors');
 const axios = require('axios');
 const scrape = require("./scrape/index.js");
 const moment = require('moment-timezone');
+const mongoose = require('mongoose');
+const cron = require('node-cron');
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 menit
@@ -17,6 +19,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TELEGRAM_TOKEN = '7496093857:AAGtgIBt0Q8Zrc_abe8SO5b1Wc2huVNjqG4';
 const TELEGRAM_CHAT_ID = '7409627999';
+const MONGO_URI = 'mongodb+srv://lordexe4646:gjSV94cMc0Yfx7tT@fumidb.hxworgm.mongodb.net/?retryWrites=true&w=majority&appName=FumiDb';
+
+// Menghubungkan ke MongoDB
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Failed to connect to MongoDB', err));
+
+// Membuat schema dan model untuk mencatat request
+const requestSchema = new mongoose.Schema({
+  endpoint: String,
+  time: Date,
+  ip: String
+});
+
+const Request = mongoose.model('Request', requestSchema);
 
 app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -37,10 +54,18 @@ const notifyTelegram = async (message) => {
   }
 };
 
-app.use('/api', (req, res, next) => {
+app.use('/api', async (req, res, next) => {
   const endpoint = decodeURIComponent(req.url);
   const timeReceived = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+  // Menyimpan request ke MongoDB
+  const newRequest = new Request({
+    endpoint,
+    time: new Date(),
+    ip
+  });
+  await newRequest.save();
 
   res.on('finish', () => {
     const status = res.statusCode;
@@ -611,5 +636,16 @@ app.get('/api/caidisconnect', async (req, res) => {
 });
 
 */
+
+cron.schedule('0 0 * * *', async () => {
+  const today = moment().tz('Asia/Jakarta').startOf('day').toDate();
+  const tomorrow = moment().tz('Asia/Jakarta').add(1, 'days').startOf('day').toDate();
+
+  const dailyRequests = await Request.countDocuments({ time: { $gte: today, $lt: tomorrow } });
+  const totalRequests = await Request.countDocuments({});
+
+  const message = `Daily Report\n\nTotal requests today: ${dailyRequests}\nTotal requests overall: ${totalRequests}`;
+  notifyTelegram(message);
+});
 
 module.exports = app;
