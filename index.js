@@ -2,45 +2,65 @@ const express = require('express');
 const path = require('path');
 const rateLimit = require("express-rate-limit");
 const cors = require('cors');
-const FormData = require('form-data');
+const axios = require('axios');
 const scrape = require("./scrape/index.js");
-
 
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 menit
-  max: 20, // maksimal 5 request per windowMs
-  message: 'Opps! Too Many Request, What Re You Doing? Baka!'
+  max: 20, // maksimal 20 request per windowMs
+  message: 'Opps! Too Many Request, What Are You Doing? Baka!'
 });
 
 const creator = "Fumi";
 const app = express();
 const PORT = process.env.PORT || 3000;
+const TELEGRAM_TOKEN = '7496093857:AAGtgIBt0Q8Zrc_abe8SO5b1Wc2huVNjqG4';
+const TELEGRAM_CHAT_ID = '7409627999';
+
 app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(cors());
-app.use(limiter)
+app.use(limiter);
 
+const notifyTelegram = async (message) => {
+  const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+  try {
+    await axios.get(url, {
+      params: {
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message
+      }
+    });
+  } catch (error) {
+    console.error('Error sending message to Telegram:', error.message);
+  }
+};
 
+app.use((req, res, next) => {
+  const message = `Request received at ${req.url} with query: ${JSON.stringify(req.query)}`;
+  notifyTelegram(message);
+  next();
+});
 
 app.get("/", (req, res) => {
-   res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/image", (req, res) => {
-   res.sendFile(path.join(__dirname, "tables.html"));
+  res.sendFile(path.join(__dirname, "tables.html"));
 });
 
 app.get("/stream", (req, res) => {
-   res.sendFile(path.join(__dirname, "stream.html"));
-})
+  res.sendFile(path.join(__dirname, "stream.html"));
+});
 
 app.get("/ai", (req, res) => {
-   res.sendFile(path.join(__dirname, "artificial.html"));
-})
+  res.sendFile(path.join(__dirname, "artificial.html"));
+});
 
 app.get("/tools", (req, res) => {
-   res.sendFile(path.join(__dirname, "tools.html"));
-})
+  res.sendFile(path.join(__dirname, "tools.html"));
+});
 
 
 
