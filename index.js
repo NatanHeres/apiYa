@@ -33,7 +33,13 @@ const requestSchema = new mongoose.Schema({
   ip: String
 });
 
+const hitCountSchema = new mongoose.Schema({
+  endpoint: { type: String, unique: true },
+  count: { type: Number, default: 0 }
+});
+
 const Request = mongoose.model('Request', requestSchema);
+const HitCount = mongoose.model('HitCount', hitCountSchema);
 
 app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
@@ -59,13 +65,17 @@ app.use('/api', async (req, res, next) => {
   const timeReceived = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
-  // Menyimpan request ke MongoDB
   const newRequest = new Request({
     endpoint,
     time: new Date(),
     ip
   });
   await newRequest.save();
+  await HitCount.findOneAndUpdate(
+    { endpoint },
+    { $inc: { count: 1 } },
+    { upsert: true, new: true }
+  );
 
   res.on('finish', () => {
     const status = res.statusCode;
@@ -646,6 +656,20 @@ cron.schedule('0 0 * * *', async () => {
 
   const message = `Daily Report\n\nTotal requests today: ${dailyRequests}\nTotal requests overall: ${totalRequests}`;
   notifyTelegram(message);
+});
+
+// Endpoint untuk menampilkan top global hits
+app.get('/api/stats', async (req, res) => {
+  try {
+    const hits = await HitCount.find().sort({ count: -1 }).limit(10); // Mendapatkan top 10 endpoint berdasarkan hit count
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: hits
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = app;
