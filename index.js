@@ -664,40 +664,30 @@ app.get('/api/gpt4', async (req, res) => {
 });
 
 
-app.get('/api/dreamshaper', async (req, res) => {
-  try {
-    const query = req.query.query;
-    if (!query) {
-      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
-    }
-    const response = await scrape.ai.dreamshaper(query);
-    res.status(200).json({
-      status: 200,
-      creator: creator,
-      data: { response }
+app.get('/api/text2img', async (req, res) => {
+      const query = req.query.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Parameter "query" not found' });
+      }
+      scrape.ai.dreamshaper(query).then(async image => {
+        res.set({ 'Content-Type': 'image/png' })
+        res.send(image)
+    })
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 
-app.get('/api/sdlightning', async (req, res) => {
-  try {
-    const query = req.query.query;
-    if (!query) {
-      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
-    }
-    const response = await scrape.ai.sdlightning(query);
-    res.status(200).json({
-      status: 200,
-      creator: creator,
-      data: { response }
+
+app.get('/api/text2img', async (req, res) => {
+      const query = req.query.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Parameter "query" not found' });
+      }
+      scrape.ai.sdlightning(query).then(async image => {
+        res.set({ 'Content-Type': 'image/png' })
+        res.send(image)
+    })
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+
 
 
 // -------------------------------- TOOLS ------------------------------------ //
