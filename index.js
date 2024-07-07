@@ -45,6 +45,8 @@ app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(cors());
 app.use(limiter);
+app.set('trust proxy', true);
+
 
 const notifyTelegram = async (message) => {
   const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
@@ -59,6 +61,8 @@ const notifyTelegram = async (message) => {
     console.error('Error sending message to Telegram:', error.message);
   }
 };
+
+const apiEndpoints = [];
 
 app.use('/api', async (req, res, next) => {
   const fullUrl = decodeURIComponent(req.url);
@@ -88,6 +92,12 @@ app.use('/api', async (req, res, next) => {
     notifyTelegram(message);
   });
 
+if (!apiEndpoints.includes(endpoint)) {
+    apiEndpoints.push(endpoint);
+  }
+
+
+
   next();
 });
 
@@ -112,6 +122,9 @@ app.get("/tools", (req, res) => {
   res.sendFile(path.join(__dirname, "tools.html"));
 });
 
+app.get('/endpoint', (req, res) => {
+  res.status(200).json(apiEndpoints);
+});
 
 
 // ------------------------------- Image ----------------------------- -//
@@ -241,6 +254,18 @@ app.get('/api/pinterestdown', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+app.get('/api/carbon', async (req, res) => {
+      const query = req.query.query;
+      if (!query) {
+        return res.status(400).json({ error: 'Parameter "query" not found' });
+      }
+      scrape.image.carbon(query).then(async image => {
+        res.set({ 'Content-Type': 'image/png' })
+        res.send(image)
+    })
+    });
 
 
 app.get('/api/doujindesulastest', (req, res) => {
@@ -404,6 +429,113 @@ app.get('/api/charadetail', async (req, res) => {
   }
 });
 
+
+app.get('/api/opsearch', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.stream.opsearch(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/opdetail', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.stream.opdetail(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/opsearch', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.stream.opsearch(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/nekosearch', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await axios.get(`http://152.42.252.147:3000/api/nekosearch?query=${query}`);
+     const hasil = response.data.data.response
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { hasil }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/nekodetail', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await axios.get(`http://152.42.252.147:3000/api/nekodetail?url=${url}`);
+     const hasil = response.data.data.response
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { hasil }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/nekolastest', async (req, res) => {
+  try {
+    const response = await axios.get('http://152.42.252.147:3000/api/nekolastest');
+     const hasil = response.data.data.response
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { hasil }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ------------------------------- AI ----------------------------- -//
 // ------------------------------- AI ----------------------------- -//
 
@@ -478,9 +610,94 @@ app.get('/api/gpt4', async (req, res) => {
 });
 
 
-app.get("/ai", (req, res) => {
-   res.sendFile(path.join(__dirname, "maintenance.html"));
-})
+app.get('/api/eleo', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.eleo(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/hatbaby', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.hatbaby(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/gpt4', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.gpt4(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/dreamshaper', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.dreamshaper(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/sdlightning', async (req, res) => {
+  try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
+    }
+    const response = await scrape.ai.sdlightning(query);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 // -------------------------------- TOOLS ------------------------------------ //
@@ -577,6 +794,60 @@ app.get('/api/9xbuddy', async (req, res) => {
 
 */
 
+
+app.get('/api/play', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.play(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/subdomain', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.subdomain(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/api/http', async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) {
+      return res.status(400).json({ error: 'Parameter "url" tidak ditemukan' });
+    }
+    const response = await scrape.tools.http(url);
+    res.status(200).json({
+      status: 200,
+      creator: creator,
+      data: { response }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ------------------------------------- CAI --------------------------------- //
 // ------------------------------------- CAI --------------------------------- //
 /*
@@ -667,16 +938,18 @@ cron.schedule('0 0 * * *', async () => {
 // Endpoint untuk menampilkan top global hits
 app.get('/api/stats', async (req, res) => {
   try {
-    const hits = await HitCount.find().sort({ count: -1 }); // Mendapatkan top 10 endpoint berdasarkan hit count tanpa query string
-    res.status(200).json({
-      status: 200,
-      creator: creator,
-      data: hits
-    });
+    const stats = await HitCount.find().lean();
+    const formattedStats = stats.map(stat => ({
+      RequestId: stat._id,
+      Endpoint: stat.endpoint,
+      TotalHit: stat.count
+    }));
+    res.status(200).json(formattedStats);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 const notifyGlobalHits = async () => {
   try {

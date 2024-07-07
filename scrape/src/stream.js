@@ -4,3 +4,6 @@ exports.zuzunimemp4 = require('./stream/zuzunimemp4');
 exports.myanimelist = require('./stream/myanimelist');
 exports.charaSearch = require('./stream/charaSearch');
 exports.charaId = require('./stream/charaId');
+exports.opdetail = require('./stream/opdetail');
+exports.opsearch = require('./stream/opsearch');
+exports.oplastest = require('./stream/oplastest');
