@@ -664,7 +664,7 @@ app.get('/api/gpt4', async (req, res) => {
 });
 
 
-app.get('/api/text2img', async (req, res) => {
+app.get('/api/dreamshaper', async (req, res) => {
       const query = req.query.query;
       if (!query) {
         return res.status(400).json({ error: 'Parameter "query" not found' });
@@ -677,7 +677,7 @@ app.get('/api/text2img', async (req, res) => {
 
 
 
-app.get('/api/text2img', async (req, res) => {
+app.get('/api/sdlightning', async (req, res) => {
       const query = req.query.query;
       if (!query) {
         return res.status(400).json({ error: 'Parameter "query" not found' });
