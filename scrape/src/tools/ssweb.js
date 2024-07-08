@@ -24,7 +24,7 @@ async function ssweb(url, device = 'desktop'){
                         },
                         responseType: 'arraybuffer'
                    }).then(({ data }) => {
-                      await conn.sendFile(m.chat, data, '', '', m)
+                      resolve(data)
                    })
               } else {
                    reject({ message: data.data })
