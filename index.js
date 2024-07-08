@@ -838,6 +838,18 @@ app.get('/api/http', async (req, res) => {
   }
 });
 
+
+app.get('/api/ssweb', async (req, res) => {
+      const url = req.query.url;
+      if (!url) {
+        return res.status(400).json({ error: 'Parameter "url" not found' });
+      }
+      scrape.tools.ssweb(url).then(async image => {
+        res.set({ 'Content-Type': 'image/png' })
+        res.send(image)
+    })
+    });
+
 // ------------------------------------- CAI --------------------------------- //
 // ------------------------------------- CAI --------------------------------- //
 /*
