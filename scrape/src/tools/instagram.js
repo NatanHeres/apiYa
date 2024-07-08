@@ -26,7 +26,7 @@ async function instagram(query) {
         selectMatches.forEach(select => {
             const idMatch = select.match(/getPhotoLink\('(\d+)'/);
             if (idMatch) {
-                const id = `image/video ${counter}`;
+                const id = `image/video-${counter}`;
                 const options = select.match(/<option value="([^"]+)">([^<]+)<\/option>/g).map(option => {
                     const urlMatch = option.match(/value="([^"]+)"/)[1].replace(/amp;/g, '');
                     const textMatch = option.match(/>([^<]+)<\/option>/)[1];
