@@ -19,7 +19,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const TELEGRAM_TOKEN = '7496093857:AAGtgIBt0Q8Zrc_abe8SO5b1Wc2huVNjqG4';
 const TELEGRAM_CHAT_ID = '7409627999';
-const MONGO_URI = 'mongodb+srv://lordexe4646:gjSV94cMc0Yfx7tT@fumidb.hxworgm.mongodb.net/?retryWrites=true&w=majority&appName=FumiDb';
+
+/*
+  const MONGO_URI = 'mongodb+srv://lordexe4646:gjSV94cMc0Yfx7tT@fumidb.hxworgm.mongodb.net/?retryWrites=true&w=majority&appName=FumiDb';
 
 // Menghubungkan ke MongoDB
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -40,7 +42,7 @@ const hitCountSchema = new mongoose.Schema({
 
 const Request = mongoose.model('Request', requestSchema);
 const HitCount = mongoose.model('HitCount', hitCountSchema);
-
+*/
 app.use(express.static('public'));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(cors());
@@ -78,25 +80,25 @@ app.use('/api', async (req, res, next) => {
     ip
   });
   await newRequest.save();
-
+/*
   // Update hit count
   await HitCount.findOneAndUpdate(
     { endpoint },
     { $inc: { count: 1 } },
     { upsert: true, new: true }
   );
-
+*/
   res.on('finish', () => {
     const status = res.statusCode;
     const message = `New Request!\n\nEndpoint: ${endpointWithQuery}\nTime: ${timeReceived}\nStatus: ${status}\nIP: ${ip}`;
     notifyTelegram(message);
   });
-
+/*
 if (!apiEndpoints.includes(endpoint)) {
     apiEndpoints.push(endpoint);
   }
 
-
+*/
 
   next();
 });
@@ -121,12 +123,12 @@ app.get("/ai", (req, res) => {
 app.get("/tools", (req, res) => {
   res.sendFile(path.join(__dirname, "tools.html"));
 });
-
+/*
 app.get('/endpoint', (req, res) => {
   res.status(200).json(apiEndpoints);
 });
 
-
+*/
 // ------------------------------- Image ----------------------------- -//
 // ------------------------------- Image ----------------------------- -//
 
@@ -936,7 +938,7 @@ cron.schedule('0 0 * * *', async () => {
   const message = `Daily Report\n\nTotal requests today: ${dailyRequests}\nTotal requests overall: ${totalRequests}`;
   notifyTelegram(message);
 });
-
+/*
 // Endpoint untuk menampilkan top global hits
 app.get('/api/stats', async (req, res) => {
   try {
@@ -966,7 +968,7 @@ const notifyGlobalHits = async () => {
       hits.forEach((hit, index) => {
         message += `${index + 1}. Endpoint: ${hit.endpoint} (Global Hits: ${hit.count})\n`;
       });
-
+*/
       // Kirim pesan ke Telegram
       await axios.get(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
         params: {
