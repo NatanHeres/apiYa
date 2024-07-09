@@ -988,12 +988,13 @@ const notifyGlobalHits = async () => {
 */
 
 // Contoh panggilan fungsi (dapat dijalankan dalam interval waktu atau cron job)
-notifyGlobalHits();
+// notifyGlobalHits();
 
 // Mengirim laporan global hits harian
+/*
 cron.schedule('5 0 * * *', () => {
   notifyGlobalHits();
 });
-
+*/
 
 module.exports = app;

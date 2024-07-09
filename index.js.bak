@@ -977,7 +977,7 @@ const notifyGlobalHits = async () => {
           text: message
         }
       });
-*/
+
       console.log('Top global hits sent to Telegram');
      else {
       console.error('No data received from global hits endpoint');
@@ -985,7 +985,7 @@ const notifyGlobalHits = async () => {
   } catch (error) {
     console.error('Error fetching or sending global hits:', error.message);
   }
-
+*/
 
 // Contoh panggilan fungsi (dapat dijalankan dalam interval waktu atau cron job)
 notifyGlobalHits();
