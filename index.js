@@ -697,11 +697,11 @@ app.get('/api/fumichat', async (req, res) => {
     if (!query) {
       return res.status(400).json({ error: 'Parameter "query" tidak ditemukan' });
     }
-    const response = await scrape.ai.fumichat(query);
+    const result = await scrape.ai.fumichat(query);
     res.status(200).json({
       status: 200,
       creator: creator,
-      data: { response }
+      data: { result }
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
