@@ -954,7 +954,7 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-
+*/
 const notifyGlobalHits = async () => {
   try {
     // Dapatkan data global hits dari endpoint /api/globalhits
@@ -968,7 +968,7 @@ const notifyGlobalHits = async () => {
       hits.forEach((hit, index) => {
         message += `${index + 1}. Endpoint: ${hit.endpoint} (Global Hits: ${hit.count})\n`;
       });
-*/
+
       // Kirim pesan ke Telegram
       await axios.get(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
         params: {
