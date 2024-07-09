@@ -985,7 +985,7 @@ const notifyGlobalHits = async () => {
   } catch (error) {
     console.error('Error fetching or sending global hits:', error.message);
   }
-};
+
 
 // Contoh panggilan fungsi (dapat dijalankan dalam interval waktu atau cron job)
 notifyGlobalHits();

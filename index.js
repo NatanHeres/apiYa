@@ -979,7 +979,7 @@ const notifyGlobalHits = async () => {
       });
 */
       console.log('Top global hits sent to Telegram');
-    } else {
+     else {
       console.error('No data received from global hits endpoint');
     }
   } catch (error) {
