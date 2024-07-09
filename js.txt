@@ -5,7 +5,7 @@ const cors = require('cors');
 const axios = require('axios');
 const scrape = require("./scrape/index.js");
 const moment = require('moment-timezone');
-// *const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const cron = require('node-cron');
 
 const limiter = rateLimit({
@@ -72,7 +72,7 @@ app.use('/api', async (req, res, next) => {
   const endpoint = fullUrl.split('?')[0];  // Mengabaikan query string untuk hit count
   const timeReceived = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:mm:ss');
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-/*
+
   // Menyimpan request ke MongoDB
   const newRequest = new Request({
     endpoint: endpointWithQuery,
@@ -969,7 +969,6 @@ const notifyGlobalHits = async () => {
         message += `${index + 1}. Endpoint: ${hit.endpoint} (Global Hits: ${hit.count})\n`;
       });
 */
-/*
       // Kirim pesan ke Telegram
       await axios.get(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
         params: {
@@ -977,7 +976,7 @@ const notifyGlobalHits = async () => {
           text: message
         }
       });
-*/
+
       console.log('Top global hits sent to Telegram');
     } else {
       console.error('No data received from global hits endpoint');
